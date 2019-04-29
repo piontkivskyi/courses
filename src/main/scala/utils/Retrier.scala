@@ -1,6 +1,7 @@
 package utils
 
 import scala.annotation.tailrec
+import scala.concurrent.Future
 import scala.concurrent.duration._
 
 object Retrier {
@@ -32,4 +33,10 @@ object Retrier {
         )
       }
     }
+
+//  final def retry[A](
+//                    block: () => Future[A],
+//                    acceptResult: A => Boolean,
+//                    retries: List[FiniteDuration]
+//                    ): Future[A] = ???
 }
