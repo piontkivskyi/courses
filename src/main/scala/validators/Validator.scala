@@ -18,11 +18,14 @@ trait Validator[T] {
     * @return the Right(value) only in case this validator and <code>other</code> validator returns valid value,
     *         otherwise Left with error messages from the validator that failed.
     */
-  def and(other: Validator[T]): Validator[T] = new Validator[T] {
-    override def validate(value: T): Either[String, T] = {
-      this.validate(value) match {
-        case Right(_) => other.validate(value)
-        case Left(err) => Left(err)
+  def and(other: Validator[T]): Validator[T] = {
+    val oldValidator = this
+    new Validator[T] {
+      override def validate(value: T): Either[String, T] = {
+        oldValidator.validate(value) match {
+          case Right(_) => other.validate(value)
+          case Left(err) => Left(err)
+        }
       }
     }
   }
@@ -33,11 +36,14 @@ trait Validator[T] {
     * @return the Right(value) only in case either this validator or <code>other</code> validator returns valid value,
     *         otherwise Left with error messages from both validators.
     */
-  def or(other: Validator[T]): Validator[T] = new Validator[T] {
-    override def validate(value: T): Either[String, T] = {
-      this.validate(value) match {
-        case Left(_) => other.validate(value)
-        case Right(result) => Right(result)
+  def or(other: Validator[T]): Validator[T] = {
+    val oldValidator = this
+    new Validator[T] {
+      override def validate(value: T): Either[String, T] = {
+        oldValidator.validate(value) match {
+          case Left(_) => other.validate(value)
+          case Right(result) => Right(result)
+        }
       }
     }
   }

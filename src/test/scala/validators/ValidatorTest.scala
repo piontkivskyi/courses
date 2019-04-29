@@ -40,11 +40,18 @@ class ValidatorTest extends FlatSpec {
   }
 
   it should "be able to chain multiple validators by using and" in {
+    val validator = Validator.positiveInt and Validator.lessThan(10)
+    val positiveResult = validator.validate(2)
+    assert(positiveResult == Right(2))
 
+    val negative = validator.validate(11)
+    assert(negative == Left("Value should be less then 10"))
   }
 
   it should "be able to chain multiple validators by using or" in {
+    val validator = Validator.positiveInt or Validator.lessThan(10)
 
+    assert(validator.validate(11) == Right(11))
   }
 
   it should "have validate method in int type" in {
