@@ -1,9 +1,13 @@
 package utils
 
 import scala.concurrent.duration._
-import org.scalatest.FlatSpec
+import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.concurrent.ScalaFutures
 
-class RetrierTest extends FlatSpec {
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class RetrierTest extends FlatSpec with ScalaFutures with Matchers {
 
   "Retrier " should "run given function if accepted result is not acceptable" in {
     var n = 0
@@ -55,4 +59,23 @@ class RetrierTest extends FlatSpec {
     assert(endTime - startTime >= 3.second.toMillis)
   }
 
+  it should "return default result async" in {
+    whenReady(
+      Retrier.retryAsync[Int](
+        () => Future { 1 },
+        res => res != 1,
+        List(0.second, 1.second)
+      ),
+      timeout(2.seconds)) { result => assert(result == 1) }
+  }
+
+  it should "return default value if retries list is empty" in {
+    whenReady(
+      Retrier.retryAsync[Int](
+        () => Future { 1 },
+        res => res != 1,
+        List()
+      ),
+      timeout(1.seconds)) { result => assert(result == 1) }
+  }
 }
