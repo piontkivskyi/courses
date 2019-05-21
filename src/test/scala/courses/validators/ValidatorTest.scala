@@ -1,4 +1,4 @@
-package validators
+package courses.validators
 
 import org.scalatest.FlatSpec
 
@@ -39,7 +39,7 @@ class ValidatorTest extends FlatSpec {
     assert(personValidator.validate(Person("", 0)) == Left("Person should have non empty name and age in range [1-99]"))
   }
 
-  it should "be able to chain multiple validators by using and" in {
+  it should "be able to chain multiple courses.validators by using and" in {
     val validator = Validator.positiveInt and Validator.lessThan(10)
     val positiveResult = validator.validate(2)
     assert(positiveResult == Right(2))
@@ -48,7 +48,7 @@ class ValidatorTest extends FlatSpec {
     assert(negative == Left("Value should be less then 10"))
   }
 
-  it should "be able to chain multiple validators by using or" in {
+  it should "be able to chain multiple courses.validators by using or" in {
     val validator = Validator.positiveInt or Validator.lessThan(10)
 
     assert(validator.validate(11) == Right(11))

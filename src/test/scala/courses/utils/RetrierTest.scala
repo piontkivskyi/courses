@@ -1,4 +1,4 @@
-package utils
+package courses.utils
 
 import scala.concurrent.duration._
 import org.scalatest.{FlatSpec, Matchers}

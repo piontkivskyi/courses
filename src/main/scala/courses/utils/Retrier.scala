@@ -1,4 +1,4 @@
-package utils
+package courses.utils
 
 import scala.annotation.tailrec
 import scala.concurrent.{ExecutionContext, Future}
@@ -50,7 +50,7 @@ object Retrier {
                     )(implicit ec: ExecutionContext): Future[A] = {
     block().flatMap(result => {
       if (acceptResult(result) || retries.isEmpty) {
-        Future(result)
+        Future.successful(result)
       } else {
         Thread.sleep(retries.head.toMillis)
         retryAsync(block, acceptResult, retries.tail)
