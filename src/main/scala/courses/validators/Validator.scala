@@ -1,4 +1,4 @@
-package validators
+package courses.validators
 
 /**
   * Implement validator typeclass that should validate arbitrary value [T].
@@ -34,7 +34,7 @@ trait Validator[T] {
     * Or combinator.
     * @param other validator to be combined with 'or' with this validator.
     * @return the Right(value) only in case either this validator or <code>other</code> validator returns valid value,
-    *         otherwise Left with error messages from both validators.
+    *         otherwise Left with error messages from both courses.validators.
     */
   def or(other: Validator[T]): Validator[T] = {
     val oldValidator = this
@@ -75,6 +75,18 @@ object Validator {
     override def validate(t: String): Either[String, String] =
       if (t.nonEmpty) { Right(t) }
       else { Left("Should be non empty string") }
+  }
+
+  val onlyAlphanumericCharacters: Validator[String] = new Validator[String] {
+    /**
+      * Validates the value.
+      *
+      * @param value value to be validated.
+      * @return Right(value) in case the value is valid, Left(message) on invalid value
+      */
+    override def validate(value: String): Either[String, String] =
+      if (value.forall(_.isLetterOrDigit)) { Right(value) }
+      else { Left("Should contain only alphanumeric characters") }
   }
 
   val isPersonValid = new Validator[Person] {
